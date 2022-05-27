@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="form">
+        <form class="form-inner" action="{{ url_for('main_bp.render_add') }}" method="POST">
+            <input type="text" placeholder="Enter a city name" name="city_name" id="input-city">
+            <button type="submit" class="submit-button">Add</button>
+        </form>
+        {% with message = get_flashed_messages() %}
+        {% if message %}
+        <div class="alert">
+            {{message[0]}}
+        </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="cards">
+        {% if weather_list %}
+        {% for weather in weather_list %}
+        <div class="card">
+            <div class="wrapper">
+                <form action="{{ url_for('main_bp.render_update', city_id=weather.id) }}" method="POST">
+                    <button class="update-button" type="submit"><i class="fa-solid fa-arrow-rotate-right"></i></button>
+                </form>
+                <form action="{{ url_for('main_bp.render_delete', city_id=weather.id) }}" method="POST">
+                    <button class="delete-button" type="submit"><i class="fa-solid fa-x"></i></button>
+                </form>
+            </div>
+            <div class="card-info">
+                <div class="icon {{weather.part_of_day}}">
+                    <img class="state-icon" src="https://openweathermap.org/img/wn/{{weather.state_icon}}@2x.png" alt="">
+                </div>
+                <div class="degrees"><span>{{weather.temp}}<span class="celsius"> °C</span></span></div>
+                <div class="state">{{weather.state}}</div>
+                <div class="city">{{weather.city}}</div>
+                <div class="date">{{weather.date}}</div>
+            </div>
+            <div class="other">
+                <div class="pressure"><span>Pressure:</span> {{weather.pressure}} mmHg</div>
+                <div class="humidity"><span>Humidity:</span> {{weather.humidity}} %</div>
+                <div class="wind"><span>Wind:</span> {{weather.wind_speed}} m/s</div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <div class="footer">
+        <ul class="copyright">
+            <li>Brz0x - 2022</li>
+        </ul>
+    </div>
+</body>
+</html>
